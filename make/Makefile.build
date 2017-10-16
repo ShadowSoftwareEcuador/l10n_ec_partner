@@ -8,3 +8,9 @@ test:
 	sleep 5
 	make test-mode
 	make undeploy-db
+
+test-ci:
+	make deploy-db-test
+	sleep 5
+	make test-mode
+	make undeploy-db

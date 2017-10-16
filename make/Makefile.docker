@@ -6,6 +6,10 @@ deploy-db:
 	@docker run --name odoo-db -p 5432:5432 -e POSTGRES_PASSWORD=odoo -e POSTGRES_USER=odoo \
 	-d postgres:9.6
 
+deploy-db-test:
+	@docker run --name odoo-db -p 5432 -e POSTGRES_PASSWORD=odoo -e POSTGRES_USER=odoo \
+	-d postgres:9.6
+
 undeploy-db:
 	@docker kill odoo-db
 	@docker rm odoo-db

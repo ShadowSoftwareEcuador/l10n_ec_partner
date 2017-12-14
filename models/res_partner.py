@@ -18,29 +18,12 @@ class ResPartner(models.Model):
     _inherit = 'res.partner'
 
     @api.multi
-    def update_identifiers(self):
-        sql = """UPDATE res_partner SET identifier='9999999999'
-        WHERE identifier is NULL"""
-        self.env.cr.execute(sql)
-
-    @api.model_cr_context
-    def init(self):
-        self.update_identifiers()
-        super(ResPartner, self).init()
-        sql_index = """
-        CREATE UNIQUE INDEX IF NOT EXISTS
-        unique_company_partner_identifier_type on res_partner
-        (company_id, identifier_type, identifier)
-        WHERE identifier_type <> 'pasaporte'"""
-        self._cr.execute(sql_index)
-
-    @api.multi
-    @api.depends('identifier', 'name')
+    @api.depends('vat', 'name')
     def name_get(self):
         data = []
         for partner in self:
             display_val = u'{0} {1}'.format(
-                partner.identifier or '*',
+                partner.vat or '*',
                 partner.name
             )
             data.append((partner.id, display_val))
@@ -51,7 +34,7 @@ class ResPartner(models.Model):
         if not args:
             args = []
         if name:
-            partners = self.search([('identifier', operator, name)] + args, limit=limit)  # noqa
+            partners = self.search([('vat', operator, name)] + args, limit=limit)  # noqa
             if not partners:
                 partners = self.search([('name', operator, name)] + args, limit=limit)  # noqa
         else:
@@ -59,42 +42,38 @@ class ResPartner(models.Model):
         return partners.name_get()
 
     @api.one
-    @api.constrains('identifier')
+    @api.constrains('vat')
     def _check_identifier(self):
         if self.identifier_type == 'cedula':
-            res = ec.ci.is_valid(self.identifier)
+            res = ec.ci.is_valid(self.vat)
         elif self.identifier_type == 'ruc':
-            res = ec.ruc.is_valid(self.identifier)
+            res = ec.ruc.is_valid(self.vat)
         else:
             return True
         if not res:
             raise ValidationError('Error en el identificador.')
 
     @api.one
-    @api.depends('identifier')
+    @api.depends('vat')
     def _compute_person_type(self):
-        if not self.identifier:
+        if not self.vat:
             self.person_type = '0'
-        elif int(self.identifier[2]) <= 6:
+        elif int(self.vat[2]) <= 6:
             self.person_type = '6'
-        elif int(self.identifier[2]) in [6, 9]:
+        elif int(self.vat[2]) in [6, 9]:
             self.person_type = '9'
         else:
             self.person_type = '0'
 
-    identifier = fields.Char('Cedula/ RUC',
-        size=13,
-        required=True,
-        help='Identificación o Registro Único de Contribuyentes')
     identifier_type = fields.Selection(
         [
             ('cedula', 'CEDULA'),
             ('ruc', 'RUC'),
             ('pasaporte', 'PASAPORTE')
             ],
-        'Tipo ID',
+        string='Tipo Identificador',
         required=True,
-        default='pasaporte'
+        default='ruc'
     )
     person_type = fields.Selection(
         compute='_compute_person_type',
@@ -103,7 +82,8 @@ class ResPartner(models.Model):
             ('9', 'Persona Juridica'),
             ('0', 'Otro')
         ],
-        string='Persona',
-        store=True
+        string='Tipo Persona',
+        store=True,
+        default='9'
     )
     is_company = fields.Boolean(default=True)

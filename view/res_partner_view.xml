@@ -1,8 +1,6 @@
 <odoo>
     <data>
-        <function  id="res_partner_type_set"
-                   model="ir.values" name="set_default"
-                   eval="('res.partner', 'company_type', 'company')"/>
+
 
         <record id="view_partner2_select" model="ir.ui.view">
             <field name="name">view.partner.select2</field>
@@ -10,7 +8,7 @@
             <field name="inherit_id" ref="base.view_res_partner_filter"/>
             <field name="arch" type="xml">
                 <field name="name" position="before">
-                    <field name="identifier"/>
+                    <field name="vat"/>
                     <field name="ref"/>
                 </field>
             </field>
@@ -22,7 +20,7 @@
             <field name="inherit_id" ref="base.view_partner_tree"/>
             <field name="arch" type="xml">
                 <xpath expr="/tree/field[@name='display_name']" position="before">
-                    <field name="identifier"/>
+                    <field name="vat"/>
                 </xpath>
             </field>
         </record>
@@ -35,13 +33,14 @@
                 <xpath expr="//field[@name='name']" position="attributes">
                     <attribute name="placeholder">Razón Social</attribute>
                 </xpath>
-                <xpath expr="//field[@name='parent_id']" position="after">
-                    <div>
-                        <field name="identifier" required="1" placeholder="Cédula / RUC" class="oe_inline"/>
-                        <field name="identifier_type" placeholder="Tipo de Identificador" class="oe_inline"/>
-                    </div>
+                <xpath expr="//field[@name='vat']" position="before">
+                   <field name="identifier_type" placeholder="Tipo de Identificador" class="oe_inline"/>
+                    <newline/>
+                </xpath>
+                <xpath expr="//field[@name='vat']" position="after">
                     <field name="person_type" placeholder="Tipo de Persona"/>
                     <newline/>
+
                 </xpath>
             </field>
         </record>

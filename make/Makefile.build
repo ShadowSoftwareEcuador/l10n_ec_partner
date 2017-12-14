@@ -1,6 +1,6 @@
 test-mode:
 	@docker run --rm --name odoo -p 8069:8069 -e HOST=odoo-db -e USER=odoo -e PASSWORD=odoo --link odoo-db:odoo-db \
-	-v ${PWD}:/mnt/extra-addons/l10n_ec_partner odoo:10.0 \
+	-v ${PWD}:/mnt/extra-addons/l10n_ec_partner odoo:11.0 \
 	odoo -d l10n_ec_partner --test-enable -i l10n_ec_partner --stop-after-init --addons-path="/mnt/extra-addons"
 
 test:

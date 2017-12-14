@@ -1,6 +1,6 @@
 deploy-odoo:
 	@docker run --name odoo -p 8069:8069 -e HOST=odoo-db -e USER=odoo -e PASSWORD=odoo --link odoo-db:odoo-db \
-	-v ${PWD}:/mnt/extra-addons -d odoo:10.0
+	-v ${PWD}:/mnt/extra-addons/l10n_ec_partner -d odoo:11.0
 
 deploy-db:
 	@docker run --name odoo-db -p 5432:5432 -e POSTGRES_PASSWORD=odoo -e POSTGRES_USER=odoo \
@@ -17,3 +17,12 @@ undeploy-db:
 undeploy-odoo:
 	@docker kill odoo
 	@docker rm odoo
+
+undeploy:
+	make undeploy-db
+	make undeploy-odoo
+
+deploy:
+	make deploy-db
+	sleep 5
+	make deploy-odoo

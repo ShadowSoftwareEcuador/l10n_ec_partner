@@ -2,7 +2,7 @@
 <odoo>
     <data>
         <record id="partner_consumidor_final" model="res.partner">
-            <field name="identifier">9999999999</field>
+            <field name="vat">9999999999</field>
             <field name="name">CONSUMIDOR FINAL</field>
             <field name="identifier_type">pasaporte</field>
             <field name="person_type">6</field>

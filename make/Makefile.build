@@ -3,8 +3,16 @@ test-mode:
 	-v ${PWD}:/mnt/extra-addons/l10n_ec_partner odoo:11.0 \
 	odoo -d l10n_ec_partner --test-enable -i l10n_ec_partner --stop-after-init --addons-path="/mnt/extra-addons"
 
+deploy-db-test:
+	@docker run --name odoo-db -p 5432 -e POSTGRES_PASSWORD=odoo -e POSTGRES_USER=odoo \
+	-d postgres:9.6
+
+undeploy-db:
+	@docker kill odoo-db
+	@docker rm odoo-db
+
 test:
-	make deploy-db
+	make deploy-db-test
 	sleep 5
 	make test-mode
 	make undeploy-db

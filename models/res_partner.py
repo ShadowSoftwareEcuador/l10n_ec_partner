@@ -51,7 +51,7 @@ class ResPartner(models.Model):
         else:
             return True
         if not res:
-            raise ValidationError('Error en el identificador.')
+            raise ValidationError('Error en el Identificador.')
 
     @api.one
     @api.depends('vat')

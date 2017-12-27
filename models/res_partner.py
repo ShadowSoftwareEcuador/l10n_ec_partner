@@ -17,6 +17,29 @@ class ResPartner(models.Model):
 
     _inherit = 'res.partner'
 
+    identifier_type = fields.Selection(
+        [
+            ('cedula', 'CEDULA'),
+            ('ruc', 'RUC'),
+            ('pasaporte', 'PASAPORTE')
+        ],
+        string='Tipo Identificador',
+        required=True,
+        default='ruc'
+    )
+    person_type = fields.Selection(
+        compute='_compute_person_type',
+        selection=[
+            ('6', 'Persona Natural'),
+            ('9', 'Persona Juridica'),
+            ('0', 'Otro')
+        ],
+        string='Tipo Persona',
+        store=True,
+        default='9'
+    )
+    is_company = fields.Boolean(default=True)
+
     @api.multi
     @api.depends('vat', 'name')
     def name_get(self):
@@ -51,7 +74,7 @@ class ResPartner(models.Model):
         else:
             return True
         if not res:
-            raise ValidationError('Error en el Identificador.')
+            raise ValidationError('Error en el identificador.')
 
     @api.one
     @api.depends('vat')
@@ -64,26 +87,3 @@ class ResPartner(models.Model):
             self.person_type = '9'
         else:
             self.person_type = '0'
-
-    identifier_type = fields.Selection(
-        [
-            ('cedula', 'CEDULA'),
-            ('ruc', 'RUC'),
-            ('pasaporte', 'PASAPORTE')
-            ],
-        string='Tipo Identificador',
-        required=True,
-        default='ruc'
-    )
-    person_type = fields.Selection(
-        compute='_compute_person_type',
-        selection=[
-            ('6', 'Persona Natural'),
-            ('9', 'Persona Juridica'),
-            ('0', 'Otro')
-        ],
-        string='Tipo Persona',
-        store=True,
-        default='9'
-    )
-    is_company = fields.Boolean(default=True)

@@ -13,8 +13,8 @@ except ImportError as err:
 
 
 class ResCompany(models.Model):
+
     _inherit = 'res.company'
 
-    accountant_id = fields.Many2one('res.partner', 'Contador')
-    sri_id = fields.Many2one('res.partner', 'Servicio de Rentas Internas')
+    accountant_id = fields.Char('Ruc del Contador', size=13)
     legal_representative_id = fields.Char('Cédula Representante Legal', size=10)

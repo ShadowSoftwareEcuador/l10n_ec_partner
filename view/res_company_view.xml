@@ -7,7 +7,6 @@
             <field name="arch" type="xml">
                 <field name="partner_id" position="after">
                     <field name="accountant_id"/>
-                    <field name="sri_id"/>
                     <field name="legal_representative_id"/>
                 </field>
             </field>
